@@ -34,3 +34,12 @@ export type TList<T> = {
   list: T[];
   total: number;
 };
+
+export type TProduct = {
+  id: string;
+  store_id: string;
+  name: string;
+  description: string;
+  price: number;
+  is_active: boolean;
+};

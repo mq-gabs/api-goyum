@@ -37,6 +37,33 @@ export function validateCredentials(data: any) {
   return validate(SignInSchema, data);
 }
 
+const CreateProductSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  price: z.number(),
+});
+
+export function validateCreateProduct(data: any) {
+  return validate(CreateProductSchema, data);
+}
+
+const UpdateProductSchema = z.object({
+  name: z.string().optional(),
+  description: z.string().optional(),
+  price: z.number().optional(),
+  is_active: z.boolean().optional(),
+});
+
+export function validateUpdateProduct(data: any) {
+  return validate(UpdateProductSchema, data);
+}
+
+const UUIDSchema = z.string().uuid();
+
+export function validateUUID(data: any) {
+  return validate(UUIDSchema, data);
+}
+
 function validate(schema: Schema, data: any) {
   try {
     const result = schema.parse(data);
