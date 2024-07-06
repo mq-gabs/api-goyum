@@ -5,7 +5,9 @@
   "main": "index.ts",
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "migration:make": "knex migrate:make"
+    "migration:make": "knex migrate:make",
+    "migrate": "knex migrate:latest",
+    "migration:rollback": "knex migrate:rollback"
   },
   "author": "",
   "license": "ISC",
