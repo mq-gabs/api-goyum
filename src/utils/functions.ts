@@ -1,8 +1,14 @@
-import { hash } from "bcrypt";
+import { hash, compare } from "bcrypt";
 import { TQuery } from "./types";
+import auth from "../config/auth";
+import { sign } from "jsonwebtoken";
 
 export async function encrypt(password: string) {
   return await hash(password, 10);
+}
+
+export async function checkPassword(trueP: string, incomingP: string) {
+  return await compare(incomingP, trueP);
 }
 
 export function assertQuery(data: any): TQuery {
@@ -14,4 +20,15 @@ export function assertQuery(data: any): TQuery {
   }
 
   return data as TQuery;
+}
+
+export function genToken(id: string) {
+  const { secret, expiresIn } = auth.jwt;
+
+  const token = sign({}, secret, {
+    subject: id,
+    expiresIn,
+  });
+
+  return token;
 }

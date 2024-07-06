@@ -7,6 +7,7 @@ export async function up(knex: Knex): Promise<void> {
     t.text("client_info").notNullable();
     t.text("observations");
     t.enum("status", ["pending", "making", "delivery", "done", "cancelled"]);
+    t.timestamp("created_at").notNullable().defaultTo(knex.fn.now());
   });
 }
 

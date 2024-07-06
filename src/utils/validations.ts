@@ -28,6 +28,15 @@ export function validateCreateStore(data: any) {
   return validate(CreateStoreSchema, data);
 }
 
+const SignInSchema = CreateStoreSchema.pick({
+  email: true,
+  password: true,
+});
+
+export function validateCredentials(data: any) {
+  return validate(SignInSchema, data);
+}
+
 function validate(schema: Schema, data: any) {
   try {
     const result = schema.parse(data);
