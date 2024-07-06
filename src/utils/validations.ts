@@ -64,6 +64,41 @@ export function validateUUID(data: any) {
   return validate(UUIDSchema, data);
 }
 
+const CreateOrderSchema = z.object({
+  observations: z.string().optional(),
+  products: z.array(
+    z.object({
+      id: z.string().uuid(),
+      quantity: z.number(),
+    })
+  ),
+  client_info: z.object({
+    name: z.string(),
+    contact: z.string(),
+    address: z.object({
+      street: z.string(),
+      number: z.number(),
+      neighborhood: z.string(),
+    }),
+  }),
+});
+
+export function validateOrder(data: any) {
+  return validate(CreateOrderSchema, data);
+}
+
+const StatusSchema = z.enum([
+  "pending",
+  "making",
+  "delivery",
+  "done",
+  "cancelled",
+]);
+
+export function validateStatus(data: any) {
+  return validate(StatusSchema, data);
+}
+
 function validate(schema: Schema, data: any) {
   try {
     const result = schema.parse(data);

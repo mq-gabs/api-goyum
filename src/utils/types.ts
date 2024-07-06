@@ -28,6 +28,7 @@ export type TQuery = {
   query?: string;
   page: number;
   pageSize: number;
+  status?: EStatus;
 };
 
 export type TList<T> = {
@@ -43,3 +44,33 @@ export type TProduct = {
   price: number;
   is_active: boolean;
 };
+
+export enum EStatus {
+  PENDING = "pending",
+  MAKING = "making",
+  DELIVERY = "delivery",
+  DONE = "done",
+  CANCELLED = "cancelled",
+}
+
+export type TClientInfo = {
+  name: string;
+  contact: string;
+  address: {
+    street: string;
+    number: number;
+    neighborhood: string;
+  };
+};
+
+export type TOrder = {
+  id: string;
+  store_id: string;
+  status: EStatus;
+  client_info: string | TClientInfo;
+  observations?: string;
+  created_at: string | Date;
+  products: (TProduct & { quantity: number })[];
+};
+
+export type TOrderProduct = TProduct & { quantity: number };

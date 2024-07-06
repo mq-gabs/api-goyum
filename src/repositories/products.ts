@@ -83,3 +83,17 @@ export async function update(
     throw new AppError(500, "Erro ao atualizar produto!", error);
   }
 }
+
+export async function getByIds(ids: string[]) {
+  try {
+    const i = conn<TProduct>("products").where(
+      conn.raw(`id IN ('${ids.join("','")}')`)
+    );
+
+    const products = await i;
+
+    return products;
+  } catch (error) {
+    throw new AppError(500, "Erro ao buscar produtos pelos ids", error);
+  }
+}
