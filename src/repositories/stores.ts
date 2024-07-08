@@ -14,7 +14,7 @@ export async function list({ query, page, pageSize }: TQuery) {
   try {
     const i = conn<TStore>("stores")
       .where(conn.raw("name like ?", `%${query || ""}%`))
-      .select("id", "nick", "name", "description", "email");
+      .select("id", "nick", "name", "description");
 
     const [{ total }] = await i.clone().count("id", { as: "total" });
 

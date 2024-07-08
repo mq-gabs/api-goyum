@@ -20,7 +20,7 @@ const CreateStoreSchema = z.object({
     friday: DaySchema,
     saturday: DaySchema,
   }),
-  email: z.string(),
+  email: z.string().email(),
   password: z.string(),
 });
 
