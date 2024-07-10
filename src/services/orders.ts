@@ -28,7 +28,7 @@ export async function createOrder(
 
   await ordersRepo.save(order);
 
-  res.json({ message: "Pedido realizado com sucesso!" });
+  res.json({ message: "Pedido realizado com sucesso!", id: order.id });
 }
 
 export async function listOrders(

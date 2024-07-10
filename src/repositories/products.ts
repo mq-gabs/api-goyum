@@ -1,3 +1,4 @@
+import { storesRepo } from ".";
 import { conn } from "../database/sqlite";
 import { AppError } from "../utils/app-error";
 import { TProduct, TQuery } from "../utils/types";
@@ -13,15 +14,17 @@ export async function save(product: TProduct) {
 export async function list(
   { query, page, pageSize }: TQuery,
   store_id: string,
-  onlyActive: boolean = false
+  isCustomer: boolean = false
 ) {
   try {
     const i = conn<TProduct>("products")
       .where({ store_id })
       .andWhere(conn.raw("name like ?", `%${query || ""}%`));
 
-    if (onlyActive) {
+    if (isCustomer) {
       i.andWhere({ is_active: true });
+
+      const store = await storesRepo.getById(store_id);      
     }
 
     const [{ total }] = await i.clone().count("id", { as: "total" });
@@ -30,6 +33,16 @@ export async function list(
       .clone()
       .limit(pageSize)
       .offset(page * pageSize);
+
+    if (isCustomer) {
+      const store = await storesRepo.getById(store_id);      
+      
+      return {
+        list: products,
+        total: Number(total),
+        store,
+      };
+    }
 
     return {
       list: products,

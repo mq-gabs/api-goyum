@@ -45,3 +45,20 @@ export async function getStoreByEmail(email: string) {
     throw new AppError(500, "Erro ao buscar loja pelo email", error);
   }
 }
+
+export async function getById(id: string) {
+  try {
+    const response = await conn<TStore>("stores")
+    .where({ id })
+    .select('id', 'name', 'description', 'nick')
+    .first();
+
+    if (!response) {
+      throw new AppError(404, 'Loja não encontrada!');
+    } 
+
+    return response;
+  } catch (error) {
+    throw new AppError(500, 'Erro ao buscar loja pelo ID', error);
+  }
+}
