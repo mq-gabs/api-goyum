@@ -1,4 +1,4 @@
-import { productsRepo } from ".";
+import { productsRepo, storesRepo } from ".";
 import { conn } from "../database/sqlite";
 import { AppError } from "../utils/app-error";
 import { EStatus, TOrder, TProduct, TQuery } from "../utils/types";
@@ -46,13 +46,19 @@ export async function list(
   }
 }
 
-export async function getById(id: string, withProducts: boolean = false) {
+export async function getById(
+  id: string,
+  withProducts: boolean = false,
+  withStore: boolean = false
+) {
   try {
-    const response = await conn<TOrder>("orders").where({ id }).first();
+    const response: any = await conn<TOrder>("orders").where({ id }).first();
 
     if (!response) {
       throw new AppError(404, "Pedido não encontrado!");
     }
+
+    response.client_info = JSON.parse(response.client_info);
 
     if (withProducts) {
       const orderProducts = await conn("orders_products").where({
@@ -78,11 +84,14 @@ export async function getById(id: string, withProducts: boolean = false) {
         return acc + curr.price;
       }, 0);
 
-      return {
-        ...response,
-        products,
-        total_price,
-      };
+      response.products = products;
+      response.total_price = total_price;
+    }
+
+    if (withStore) {
+      const store = await storesRepo.getById(response.store_id);
+
+      response.store = store;
     }
 
     return response;

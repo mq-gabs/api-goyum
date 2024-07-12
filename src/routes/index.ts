@@ -30,4 +30,4 @@ router.patch("/products/:id", ensureAuth, updateProduct);
 router.get("/orders", ensureAuth, listOrders);
 router.post("/orders/:store_id", createOrder);
 router.patch("/orders/:id", ensureAuth, updateOrderStatus);
-router.get("/orders/:id", ensureAuth, findOrderById);
+router.get("/orders/:id", findOrderById);

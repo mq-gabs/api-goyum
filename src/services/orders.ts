@@ -61,7 +61,7 @@ export async function findOrderById(
 ) {
   validateUUID(id);
 
-  const response = await ordersRepo.getById(id, true);
+  const response = await ordersRepo.getById(id, true, true);
 
   res.json(response);
 }
