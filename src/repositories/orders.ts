@@ -26,6 +26,17 @@ export async function list(
   try {
     const i = conn<TOrder>("orders").where({ store_id });
 
+    const [counts] = await i.clone().select(
+      conn.raw(`
+        SUM(CASE WHEN status == 'pending' THEN 1 ELSE 0 END) as pending_count,
+        SUM(CASE WHEN status == 'making' THEN 1 ELSE 0 END) as making_count,
+        SUM(CASE WHEN status == 'delivery' THEN 1 ELSE 0 END) as delivery_count,
+        SUM(CASE WHEN status == 'done' THEN 1 ELSE 0 END) as done_count,
+        SUM(CASE WHEN status == 'cancelled' THEN 1 ELSE 0 END) as cancelled_count,
+        COUNT(id) as all_count
+      `)
+    );
+
     if (status) {
       i.andWhere({ status });
     }
@@ -37,9 +48,15 @@ export async function list(
       .limit(pageSize)
       .offset(page * pageSize);
 
+    const formattedOrders = orders.map((order) => {
+      order.client_info = JSON.parse(order.client_info as string);
+      return order;
+    });
+
     return {
-      list: orders,
+      list: formattedOrders,
       total: Number(total),
+      ...counts,
     };
   } catch (error) {
     throw new AppError(500, "Erro ao listar pedidos", error);
@@ -81,7 +98,7 @@ export async function getById(
       );
 
       const total_price = products.reduce((acc, curr) => {
-        return acc + curr.price;
+        return acc + curr.price * curr.quantity;
       }, 0);
 
       response.products = products;

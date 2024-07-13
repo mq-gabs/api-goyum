@@ -23,8 +23,6 @@ export async function list(
 
     if (isCustomer) {
       i.andWhere({ is_active: true });
-
-      const store = await storesRepo.getById(store_id);      
     }
 
     const [{ total }] = await i.clone().count("id", { as: "total" });
@@ -35,8 +33,8 @@ export async function list(
       .offset(page * pageSize);
 
     if (isCustomer) {
-      const store = await storesRepo.getById(store_id);      
-      
+      const store = await storesRepo.getById(store_id);
+
       return {
         list: products,
         total: Number(total),
